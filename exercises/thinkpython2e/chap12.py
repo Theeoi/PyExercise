@@ -24,9 +24,7 @@ def most_frequent(s: str) -> list[str]:
     return cfreq
 
 # 12.2
-def anagramdict() -> dict[tuple[str], list[str]]:
-    words: list[str] = open('words.txt').read().split('\n')
-    
+def anagramdict(words: list[str]) -> dict[tuple[str], list[str]]:
     anadict = {}
     for word in words:
         tup = tuple(sorted(list(word)))
@@ -49,15 +47,39 @@ def best_bingoletters(anadict) -> list[tuple]:
 
     return bingoletters
 
+# 12.3
+def find_metathesis(anadict: dict[tuple[str], list[str]]) -> list[tuple]:
+    pairs = []
+    for anagrams in anadict.values():
+        if len(anagrams) < 2:
+            continue
+        for word1 in anagrams:
+            for word2 in anagrams:
+                if word1 < word2 and word_diff(word1, word2) == 2:
+                    pairs.append((word1, word2))
+
+    return pairs
+
+def word_diff(word1: str, word2: str) -> int:
+    count = 0
+    for c1, c2 in zip(word1, word2):
+        if c1 != c2:
+            count += 1
+
+    return count
+
+
 if __name__ == "__main__":
     text: str = open('emma.txt').read()
     letter_seq = most_frequent(text)
     print(letter_seq)
 
-    anadict = anagramdict()
+    words: list[str] = open('words.txt').read().split('\n')
+    anadict = anagramdict(words)
     print_anagrams(anadict)
     print(best_bingoletters(anadict))
 
+    print(find_metathesis(anadict))
 
 
 
