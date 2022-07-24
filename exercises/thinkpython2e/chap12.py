@@ -23,8 +23,29 @@ def most_frequent(s: str) -> list[str]:
 
     return cfreq
 
+# 12.2
+def anagramdict() -> dict[tuple[str], list[str]]:
+    words: list[str] = open('words.txt').read().split('\n')
+    
+    anadict = {}
+    for word in words:
+        tup = tuple(sorted(list(word)))
+        anadict[tup] = anadict.get(tup, [])
+        anadict[tup].append(word)
+
+    return anadict
+
+def print_anagrams(anadict) -> None:
+    for _, value in sorted(anadict.items(), key=lambda x: len(x[1])):
+        if len(value) > 1:
+            print(value)
+    
+
 if __name__ == "__main__":
     text: str = open('emma.txt').read()
     letter_seq = most_frequent(text)
     print(letter_seq)
+
+    anadict = anagramdict()
+    print_anagrams()
 
