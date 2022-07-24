@@ -40,6 +40,14 @@ def print_anagrams(anadict) -> None:
         if len(value) > 1:
             print(value)
     
+def best_bingoletters(anadict) -> list[tuple]:
+    bingoletters = []
+    for key, value in anadict.items():
+        # Hinted: There are 7 possible bingos from the 8 letter collection
+        if len(key) == 8 and len(value) >= 7:
+            bingoletters.append(key)
+
+    return bingoletters
 
 if __name__ == "__main__":
     text: str = open('emma.txt').read()
@@ -47,5 +55,11 @@ if __name__ == "__main__":
     print(letter_seq)
 
     anadict = anagramdict()
-    print_anagrams()
+    print_anagrams(anadict)
+    print(best_bingoletters(anadict))
+
+
+
+
+
 
