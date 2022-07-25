@@ -70,6 +70,56 @@ def word_diff(word1: str, word2: str) -> int:
 
     return count
 
+# 12.4
+def word_children(word: str) -> list[str]:
+    """
+    Return a list of valid words produced by removing one letter from the input
+    word.
+    """
+    children = []
+    for i, _ in enumerate(word):
+        sep_word = list(word)
+        sep_word.pop(i)
+        child = "".join(sep_word)
+        if child in WORDS:
+            children.append(child)
+
+    return children
+
+def is_reducible(word: str, memo: dict[str, bool] = {}) -> bool:
+    """
+    Recursively checks if a word is reducible.
+    i.e. any of its children are reducible.
+    """
+    if word in memo:
+        return memo[word]
+
+    if word == '':
+        memo[word] = True
+        return memo[word]
+    
+    children = word_children(word)
+    if not children:
+        memo[word] = False
+        return memo[word]
+
+    for child in children:
+        memo[child] = is_reducible(child, memo)
+        return memo[child]
+
+def find_reducible(words: tuple[str], memo: dict[str, bool] = {}) -> tuple[str]:
+    """
+    Iterate over words and return all words which are reducible.
+    """
+    totalwords = len(words)
+    reducible = []
+    for num, word in enumerate(words):
+        print(f"{num + 1}/{totalwords} words checked.")
+        if is_reducible(word, memo):
+            reducible.append(word)
+
+    return tuple(reducible)
+
 
 if __name__ == "__main__":
     text: str = open('emma.txt').read()
@@ -82,7 +132,14 @@ if __name__ == "__main__":
 
     print(find_metathesis(anadict))
 
+    reducible: tuple[str] = find_reducible(WORDS)
+    t = []
+    for word in reducible:
+        t.append((len(word), word))
+    t.sort(reverse=True)
 
+    for _, word in t[:5]:
+        print(word)
 
 
 
