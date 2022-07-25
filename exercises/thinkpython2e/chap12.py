@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+WORDS: tuple[str] = tuple(open('words.txt').read().split('\n'))
+
 # 12.1
 def most_frequent(s: str) -> list[str]:
     """
@@ -24,7 +26,7 @@ def most_frequent(s: str) -> list[str]:
     return cfreq
 
 # 12.2
-def anagramdict(words: list[str]) -> dict[tuple[str], list[str]]:
+def anagramdict(words: tuple[str]) -> dict[tuple[str], list[str]]:
     anadict = {}
     for word in words:
         tup = tuple(sorted(list(word)))
@@ -74,8 +76,7 @@ if __name__ == "__main__":
     letter_seq = most_frequent(text)
     print(letter_seq)
 
-    words: list[str] = open('words.txt').read().split('\n')
-    anadict = anagramdict(words)
+    anadict = anagramdict(WORDS)
     print_anagrams(anadict)
     print(best_bingoletters(anadict))
 
