@@ -63,6 +63,9 @@ def find_metathesis(anadict: dict[tuple[str], list[str]]) -> list[tuple]:
     return pairs
 
 def word_diff(word1: str, word2: str) -> int:
+    """
+    Return the number of differing letters between two words.
+    """
     count = 0
     for c1, c2 in zip(word1, word2):
         if c1 != c2:
@@ -138,6 +141,7 @@ if __name__ == "__main__":
         t.append((len(word), word))
     t.sort(reverse=True)
 
+    # the reducible words are sorted in descending order. Print the 5 longest.
     for _, word in t[:5]:
         print(word)
 
