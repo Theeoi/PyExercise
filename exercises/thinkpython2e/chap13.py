@@ -144,6 +144,46 @@ def bisect_search(tup: tuple[int], x: int) -> int:
 
     return lo
 
+# 13.8
+# Add functionality to blend more literary works?
+def markov_dict(words: list[str], l: int = 2) -> dict[tuple[str], dict[str, int]]:
+    """
+    Return a dictionary mapping a tuple of strings (the prefix) of length l to a dictionary
+    of available suffixes and their frequency from the specific prefix.
+    """
+    d = {}
+
+    prefix = tuple(words[:l])
+    for word in words[l:]:
+        prefixdict = d.get(prefix, {word: 0})
+        freq = prefixdict.get(word, 0) + 1
+        if prefix in d:
+            d[prefix].update({word: freq})
+        else:
+            d[prefix] = {word: freq}
+
+        prefix = prefix[1:] + (word,)
+
+    return d
+
+def generate_text(markov: dict[tuple[str], dict[str, int]], 
+        seed: str = 'she was', 
+        length: int = 50) -> None:
+    """
+    Prints generated text using the markov dictionary with the seed as base.
+    """
+    seed_tup = tuple(seed.split())
+    if len(seed_tup) != len(list(markov.keys())[0]):
+        raise AttributeError("Seed length does not match supplied markov" +
+                " dictionary.")
+
+    print(seed, end=' ')
+    for _ in range(len(seed_tup), length):
+        next_word = choose_from_hist(markov[seed_tup])
+        print(next_word, end=' ')
+        seed_tup = seed_tup[1:] + (next_word,)
+    print()
+
  
 if __name__ == "__main__":
     work: str = 'emma.txt'
@@ -160,8 +200,8 @@ if __name__ == "__main__":
     print(f"Choosen list word: {choose_from_hist(wordhist)}")
     print(f"Choosen bisect word: {choose_from_hist_bisect(wordhist)}")
 
-
-
+    markov = markov_dict(words)
+    generate_text(markov)
      
 
 
