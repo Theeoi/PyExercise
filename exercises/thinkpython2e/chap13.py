@@ -131,7 +131,7 @@ def choose_from_hist_bisect(hist: dict[str, int]) -> str:
 
 def bisect_search(tup: tuple[int], x: int) -> int:
     """
-    Returns index of entry in tup closest to x.
+    Returns index of entry in sorted tup closest to x.
     """
     lo = 0
     hi = len(tup)
