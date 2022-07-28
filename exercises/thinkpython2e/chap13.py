@@ -98,7 +98,53 @@ def choose_from_hist(hist: dict[str, int]) -> str:
 
     return random.choice(l)
 
+# 13.6
+def invalid_words_set(hist: dict[str, int]) -> None:
+    """
+    Compares words in histogram to a tuple of valid words and prints those not
+    present.
+    """
+    valid_words: set[str] = set(open('words.txt').read().split('\n'))
 
+    print(f"Words not present in the english dictionary:")
+    print(set(hist) - valid_words)
+
+# 13.7
+def choose_from_hist_bisect(hist: dict[str, int]) -> str:
+    """
+    Print a random key weighted to frequency from the input histogram using
+    bisect search on the cumulative word frequency.
+    """
+    words = []
+    freqsum = []
+    totfreq = 0
+    
+    for word, freq in hist.items():
+        totfreq += freq
+        words.append(word)
+        freqsum.append(totfreq)
+
+    x = random.randint(1, freqsum[-1])
+    wordindex = bisect_search(tuple(freqsum), x)
+
+    return words[wordindex]
+
+def bisect_search(tup: tuple[int], x: int) -> int:
+    """
+    Returns index of entry in tup closest to x.
+    """
+    lo = 0
+    hi = len(tup)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if x < tup[mid]:
+            hi = mid
+        else:
+            lo = mid + 1
+
+    return lo
+
+ 
 if __name__ == "__main__":
     work: str = 'emma.txt'
     print(f"Information about {work}:")
@@ -110,8 +156,9 @@ if __name__ == "__main__":
 
     most_common_words(wordhist)
 
-    invalid_words(wordhist)
-    print(f"Choosen word: {choose_from_hist(wordhist)}")
+    invalid_words_set(wordhist)
+    print(f"Choosen list word: {choose_from_hist(wordhist)}")
+    print(f"Choosen bisect word: {choose_from_hist_bisect(wordhist)}")
 
 
 
