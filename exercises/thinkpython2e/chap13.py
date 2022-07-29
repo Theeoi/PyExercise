@@ -2,6 +2,8 @@
 import string
 import re
 import random
+import math
+import matplotlib.pyplot as plt
 
 # 13.1
 def get_words(file: str) -> list[str]:
@@ -58,15 +60,23 @@ def num_words(hist: dict[str, int]) -> None:
     print(f"The total number of unique words is {unique}.")
 
 # 13.3
-def most_common_words(hist: dict[str, int], num: int = 20) -> None:
+def sort_hist(hist: dict[str, int]) -> list[tuple[int, str]]:
     """
-    Prints the {num} most common word the in histogram dictionary.
+    Returns a sorted list of word frequencies in descending order.
     """
     wordfreq = []
     for word, count in hist.items():
         wordfreq.append((count, word))
 
     wordfreq.sort(reverse=True)
+    return wordfreq
+    
+
+def most_common_words(hist: dict[str, int], num: int = 20) -> None:
+    """
+    Prints the {num} most common word the in histogram dictionary.
+    """
+    wordfreq = sort_hist(hist)
 
     print(f"The {num} most commonly used words are:")
     for _, word in wordfreq[:num]:
@@ -184,7 +194,40 @@ def generate_text(markov: dict[tuple[str], dict[str, int]],
         seed_tup = seed_tup[1:] + (next_word,)
     print()
 
- 
+# 13.9
+def zipf(hist: dict[str, int]) -> dict[str, list[str | float]]:
+    """
+    Returns zipf parameters (log f and log r) accociated with the words in the
+    input histogram.
+    """
+    wordfreq = sort_hist(hist)
+
+    d = {'word': [], 'log r': [], 'log f': []}
+    for rank, (freq, word) in enumerate(wordfreq):
+        d['log r'].append(math.log10(rank+1))
+        d['log f'].append(math.log10(freq))
+        d['word'].append(word)
+
+    return d
+
+def plot_zipf(data: dict[str, list[str, float]]) -> None:
+    """
+    Plots Zipf's law data from a dict containing the word, log r and log f.
+    """
+    _, ax1 = plt.subplots(figsize = (5,4))
+
+    ax1.tick_params('both', labelsize = '16')
+
+    ax1.set_xlabel("log r", fontsize = '20')
+    ax1.set_ylabel("log f", fontsize = '20')
+    
+    ax1.plot(data["log r"], 
+            data["log f"], 
+            color = 'b')
+
+    plt.show()
+
+
 if __name__ == "__main__":
     work: str = 'emma.txt'
     print(f"Information about {work}:")
@@ -203,7 +246,10 @@ if __name__ == "__main__":
     markov = markov_dict(words)
     generate_text(markov)
      
+    zipf: dict[str, list[str | float]] = zipf(wordhist)
+    plot_zipf(zipf)
 
+    # TODO: Estimate s with a linear regression (log f = log c - s * log r)
 
 
 
