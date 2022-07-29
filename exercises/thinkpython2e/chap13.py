@@ -249,7 +249,7 @@ if __name__ == "__main__":
     zipf: dict[str, list[str | float]] = zipf(wordhist)
     plot_zipf(zipf)
 
-    # TODO: Estimate s with a linear regression (log f = log c - s * log r)
+    # TODO: Estimate s and c with a linear regression (log f = log c - s * log r)
 
 
 
