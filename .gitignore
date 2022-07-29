@@ -1,6 +1,8 @@
 *__pycache__*
 sources/
 text_*
+sed*
+anagrams
 
 .direnv/
 .envrc
