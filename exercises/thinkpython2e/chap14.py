@@ -25,9 +25,9 @@ def store_anagram(anadict: dict[tuple[str], list[str]]) -> None:
     """
     Stores a anagram dictionary in a 'shelf'
     """
-    with shelve.open('anagrams') as db:
+    with shelve.open('anagrams.db') as db:
         for key, value in anadict.items():
-            db[key] = value
+            db[str(key)] = value
 
 
 def read_anagram(word: str) -> list[str]:
@@ -35,12 +35,21 @@ def read_anagram(word: str) -> list[str]:
     Looks for anagrams of {word} in the stored 'shelf'.
     Returns a list of anagrams.
     """
-    pass
+    key = tuple(sorted(list(word)))
+
+    try:
+        with shelve.open('anagrams.db') as db:
+            return db[str(key)]
+    except KeyError:
+        print(f"KeyError: Anagrams of '{word}' are not stored in the shelf" +
+                " 'anagrams.db'. Please update/create the shelf first.")
+        return []
 
 
 if __name__ == "__main__":
     sed('emma', 'Theo', 'emma.txt', 'sed_emma.txt')
 
     anadict = anagramdict(WORDS)
-    store_anagram(anadict)
+    # store_anagram(anadict)
+    print(read_anagram('reverse'))
 

@@ -2,7 +2,7 @@
 sources/
 text_*
 sed*
-anagrams
+*.db
 
 .direnv/
 .envrc
