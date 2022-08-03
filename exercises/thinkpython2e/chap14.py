@@ -2,6 +2,8 @@
 
 import re
 import shelve
+import os
+import subprocess
 
 from chap12 import anagramdict, WORDS
 
@@ -45,6 +47,67 @@ def read_anagram(word: str) -> list[str]:
                 " 'anagrams.db'. Please update/create the shelf first.")
         return []
 
+# 14.3
+def find_files(top_path: str, filetype: str) -> list[str]:
+    """
+    Searches {path} recursively for all files of {filetype} and returns their
+    relative paths in a list.
+    - filetype should have the form '.txt' for example.
+    """
+    paths = []
+    for name in os.listdir(top_path):
+        path = os.path.join(top_path, name)
+
+        _, ext = os.path.splitext(path)
+        if os.path.isfile(path) and ext == filetype:
+            paths.append(path)
+        if os.path.isdir(path):
+            paths.extend(find_files(path, filetype))
+
+    return paths
+
+
+def compute_checksum(filepath: str) -> str:
+    """
+    Computes the md5sum for given {filepath}.
+    Returns the output as a string.
+    """
+    process = subprocess.run(['md5sum', filepath], capture_output=True,
+            text=True)
+    return process.stdout
+
+
+def get_duplicates(path: str, filetype: str) -> dict[str, list[str]]:
+    """
+    Search {path} recursively for all file of {filetype} and return a dictionary
+    mapping their md5sum checksum to a list of filepaths with the same checksum.
+    - filetype should have the form '.txt' for example.
+    """
+    paths: list[str] = find_files(path, filetype)
+    
+    d = {}
+    for path in paths:
+        res = compute_checksum(path)
+        checksum, _ = res.split()
+
+        if checksum in d:
+            d[checksum].append(path)
+        else:
+            d[checksum] = [path]
+    
+    return d
+
+def print_duplicates(d: dict[str, list[str]]) -> None:
+    """
+    Prints files with matching checksums according to the input dictionary.
+    {d} should be a dict mapping checksums to a list of all matching files.
+    """
+    for paths in d.values():
+        if len(paths) > 1:
+            print(f"The following files have the same checksum:")
+            for path in paths:
+                print(path)
+
 
 if __name__ == "__main__":
     sed('emma', 'Theo', 'emma.txt', 'sed_emma.txt')
@@ -52,4 +115,7 @@ if __name__ == "__main__":
     anadict = anagramdict(WORDS)
     # store_anagram(anadict)
     print(read_anagram('reverse'))
+
+    dup = get_duplicates('.', '.py')
+    print_duplicates(dup)
 
