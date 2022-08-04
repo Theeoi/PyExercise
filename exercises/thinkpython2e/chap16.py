@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 from __future__ import annotations
+import datetime
 
+# 16.1
 class Time:
     """
     Represents a time of day.
@@ -71,6 +73,42 @@ def avg_pace(laptime: Time, distance: int) -> Time:
     pace: int = laptime.to_int()/distance
     return Time.int_to_time(pace)
 
+# 16.2
+def curr_weekday() -> str:
+    """
+    Return a string representation of the current weekday.
+    """
+    weekdays = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+            'Saturday', 'Sunday')
+    day: int = datetime.date.today().weekday()
+
+    return weekdays[day]
+
+def birthday(date: str) -> None:
+    """
+    Prints the age and the time left for the next birthday for someone born on
+    {date}.
+    Date must be supplied in ISO format YYYY-MM-DD
+    """
+    ONEYEAR = datetime.timedelta(days=365)
+    birthday = datetime.datetime.fromisoformat(date)
+    today = datetime.datetime.now()
+
+    daysold = today - birthday
+
+    yearsold, timesince = divmod(daysold, ONEYEAR)
+    rem = ONEYEAR - timesince
+
+    h, ms = divmod(rem.seconds, 60*60)
+    m, s = divmod(ms, 60)
+
+    text = (
+        f"A person born on {date} is {yearsold} years old.\n"
+        f"There is {rem.days} days, {h} hours, {m} minutes and {s} seconds "
+        f"remaining before their next birthday."
+    )
+    print(text)
+
 
 if __name__ == "__main__":
     t1 = Time(1, 45, 10)
@@ -85,3 +123,8 @@ if __name__ == "__main__":
     dist: int = 20 # distance in km
     print(f"The average pace running {dist} km in {t1} is:")
     print(f"{avg_pace(t1, dist)} per km")
+
+    print(f"Today is: {curr_weekday()}")
+
+    mybirthday = '1995-01-14'
+    birthday(mybirthday)
