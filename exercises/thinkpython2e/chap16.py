@@ -109,6 +109,33 @@ def birthday(date: str) -> None:
     )
     print(text)
 
+def double_day(d1: str, d2: str, n: int = 2) -> None:
+    """
+    Takes two birthdays in ISO format as input 'YYYY-MM-DD'.
+    Computes and prints the date when the older of the two was {n} times older
+    than the other. n defaults to 2.
+    """
+    b1 = datetime.date.fromisoformat(d1)
+    b2 = datetime.date.fromisoformat(d2)
+    if b1 > b2:
+        b1, b2 = b2, b1
+
+    age1 = b2 - b1
+    age2 = datetime.timedelta(days=0)
+    delta = datetime.timedelta(days=1)
+    while True:
+        age1 += delta
+        age2 += delta
+
+        if age2 * n >= age1:
+            nday = b2 + age2 + delta
+            break
+
+    text = (
+        f"The {n}-day of two people born on {d1} and {d2} is {nday}."
+    )
+    print(text)
+
 
 if __name__ == "__main__":
     t1 = Time(1, 45, 10)
@@ -127,4 +154,8 @@ if __name__ == "__main__":
     print(f"Today is: {curr_weekday()}")
 
     mybirthday = '1995-01-14'
+    vbirthday = '1997-07-11'
+    kbirthday = '1999-12-23'
     birthday(mybirthday)
+
+    double_day(mybirthday, kbirthday)
