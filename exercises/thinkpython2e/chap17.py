@@ -14,9 +14,10 @@ from __future__ import print_function, division
 
 class Time:
     """Represents the time of day.
-       
+
     attributes: hour, minute, second
     """
+
     def __init__(self, hour=0, minute=0, second=0):
         """Initializes a time object.
 
@@ -31,7 +32,7 @@ class Time:
         """Returns a string representation of the time."""
         hminute, second = divmod(self.seconds, 60)
         hour, minute = divmod(hminute, 60)
-        return '%.2d:%.2d:%.2d' % (hour, minute, second)
+        return f"{hour:02d}:{minute:02d}:{second:02d}"
 
     def print_time(self):
         """Prints a string representation of the time."""
@@ -52,8 +53,8 @@ class Time:
         """
         if isinstance(other, Time):
             return self.add_time(other)
-        else:
-            return self.increment(other)
+
+        return self.increment(other)
 
     def __radd__(self, other):
         """Adds two Time objects or a Time object and a number."""
@@ -90,7 +91,10 @@ def int_to_time(seconds):
     return time
 
 
-def main():
+def main1():
+    """
+    Main function for ex 17.1
+    """
     start = Time(9, 45, 00)
     start.print_time()
 
@@ -111,12 +115,42 @@ def main():
     print(1337 + start)
 
     print('Example of polymorphism')
-    t1 = Time(7, 43)
-    t2 = Time(7, 41)
-    t3 = Time(7, 37)
-    total = sum([t1, t2, t3])
+    t_1 = Time(7, 43)
+    t_2 = Time(7, 41)
+    t_3 = Time(7, 37)
+    total = sum([t_1, t_2, t_3])
     print(total)
+
+# 17.2
+
+
+class Kangaroo:
+    """
+    A fine animal from Australia.
+    """
+
+    def __init__(self, name: str, contents=None) -> None:
+        self.name = name
+        if contents is None:
+            contents = []
+        self.pouch_contents = contents
+
+    def __str__(self) -> str:
+        return f"Kangaroo {self.name}: {self.pouch_contents}"
+
+    def put_in_pouch(self, obj: any) -> None:
+        """
+        Put any object in the Kangaroo's pouch
+        """
+        self.pouch_contents.append(obj)
 
 
 if __name__ == '__main__':
-    main()
+    main1()
+
+    kanga = Kangaroo('Kanga')
+    roo = Kangaroo('Roo')
+    kanga.put_in_pouch(roo)
+
+    print(kanga)
+    print(roo)
