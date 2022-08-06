@@ -155,6 +155,24 @@ class PokerHand(Hand):
         """
         Sets the label of the hand to the highest value classification.
         """
+        labels: tuple[str] = ('none', 'pair', 'two pair',
+                                      'three of a kind', 'straight', 'flush',
+                                      'full house', 'four of a kind',
+                                      'straight flush')
+        classification: dict[str] = {'has_pair': 1, 'has_two_pair': 2,
+                                     'has_three': 3, 'has_straight': 4,
+                                     'has_flush': 5, 'has_house': 6, 'has_four':
+                                     7, 'has_straight_flush': 8}
+        checkers: list[str] = [f for f in dir(self) if f.startswith('has')]
+        label_index: list[int] = [0]
+
+        for checker in checkers:
+            func = getattr(self, checker)
+            if func():
+                label_index.append(classification[checker])
+
+        self.label = labels[max(label_index)]
+        print(self.label)
 
 
 if __name__ == '__main__':
@@ -177,3 +195,5 @@ if __name__ == '__main__':
         print(f"Four of a kind: {hand.has_four()}")
         print(f"Straight flush: {hand.has_straight_flush()}")
         print('')
+
+        hand.classification()
