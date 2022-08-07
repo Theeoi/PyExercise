@@ -90,13 +90,14 @@ class PokerHand(Hand):
         ranks: tuple[int, ...] = tuple(set(sorted(rankslist)))
         if len(ranks) < 5:
             return False
-        # This code does not work for 10-J-Q-K-A straights
-        # since rank[K] = 13 and rank[A] = 1
         slen = 0
         for i, rank in enumerate(ranks[:-1]):
             if ranks[i+1] != rank + 1:
                 slen = 0
             slen += 1
+            # A very wonky "fix" for 10-J-Q-K-A straights
+            if (i == len(ranks) - 2 and rank == 12 and ranks[0] == 1):
+                slen += 1
             if slen >= 5:
                 return True
         return False
@@ -147,6 +148,9 @@ class PokerHand(Hand):
                     if suit_ranks[i+1] != rank + 1:
                         slen = 0
                     slen += 1
+                    # A very wonky "fix" for 10-J-Q-K-A straights
+                    if (i == len(suit_ranks) - 2 and rank == 12 and suit_ranks[0] == 1):
+                        slen += 1
                     if slen >= 5:
                         return True
 
@@ -192,7 +196,6 @@ def count_classifications(num: int, hand_size: int = 7, p_out: bool = True) -> d
         label_hist[hand.label] = label_hist.get(hand.label, 0) + 1
 
     if p_out:
-        print(label_hist)
         print_pokerprob(label_hist)
 
     return label_hist
@@ -219,7 +222,7 @@ if __name__ == '__main__':
     deck.shuffle()
 
     # deal the cards and classify the hands
-    for _ in range(3):
+    for _ in range(0):
         hand = PokerHand()
         deck.move_cards(hand, 7)
         hand.sort()
