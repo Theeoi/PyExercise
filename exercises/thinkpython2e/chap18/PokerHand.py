@@ -141,8 +141,6 @@ class PokerHand(Hand):
                     suit_rankslist.append(card.rank)
             suit_ranks: tuple[int, ...] = tuple(set(sorted(suit_rankslist)))
             if len(suit_ranks) >= 5:
-                # This code does not work for 10-J-Q-K-A straights
-                # since rank[K] = 13 and rank[A] = 1
                 slen = 0
                 for i, rank in enumerate(suit_ranks[:-1]):
                     if suit_ranks[i+1] != rank + 1:
