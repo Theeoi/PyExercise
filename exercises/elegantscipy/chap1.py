@@ -58,14 +58,53 @@ def plot_countdensity(counts: np.ndarray) -> None:
     ax.set_xlabel("Total counts per individual")
     ax.set_ylabel("Density")
 
-    plt.show()
-
     print(
         f"Count statistics:\n"
         f"  min: {np.min(total_counts)}\n"
         f"  mean: {np.mean(total_counts)}\n"
         f"  max: {np.max(total_counts)}"
     )
+
+
+def get_subset(counts: np.ndarray) -> np.ndarray:
+    """
+    Randomly selects and returns a subset of input ndarray.
+    """
+    np.random.seed(seed=7)
+
+    sample_index = np.random.choice(range(counts.shape[1]), size=70,
+                                    replace=False)
+    return counts[:, sample_index]
+
+
+def reduce_xaxis_labels(ax, factor: int) -> None:
+    """
+    Only show every {factor}th x-axis label.
+    """
+    for i, l in enumerate(ax.xaxis.get_ticklabels()):
+        if i % factor != factor-1:
+            l.set_visible(False)
+
+
+def plot_boxplot(counts: np.ndarray) -> None:
+    """
+    Plots a boxplot of input data.
+    """
+    _, ax = plt.subplots(figsize=(5, 2))
+
+    with plt.style.context('style/thinner.mplstyle'):
+        ax.boxplot(np.log(counts + 1))
+        ax.set_xlabel("Individuals")
+        ax.set_ylabel("Log gene expression counts")
+        reduce_xaxis_labels(ax, 5)
+
+
+def norm_libsize(counts: np.ndarray) -> np.ndarray:
+    """
+    Normalize counts to library size and return new ndarray.
+    """
+    total_counts = np.sum(counts, axis=0)
+    return counts / total_counts * 1000000
 
 
 if __name__ == "__main__":
@@ -88,3 +127,12 @@ if __name__ == "__main__":
     print(gene_lengths.shape)
 
     plot_countdensity(counts)
+
+    counts_subset = get_subset(counts)
+    plot_boxplot(counts_subset)
+
+    counts_lib_norm = norm_libsize(counts)
+    counts_subset_lib_norm = get_subset(counts_lib_norm)
+    plot_boxplot(counts_subset_lib_norm)
+
+    plt.show()
