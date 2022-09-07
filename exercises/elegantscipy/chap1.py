@@ -22,7 +22,8 @@ def read_data(file: str) -> pd.DataFrame:
 
 def matched_indexes(df1: pd.DataFrame, df2: pd.DataFrame) -> np.ndarray:
     """
-    Takes two DataFrames and returns an NumPy array of the indexes that matched.
+    Takes two DataFrames and returns an NumPy array of the indexes that match
+    between the two DataFrames.
     """
     matched_index = pd.Index.intersection(df1.index, df2.index)
     return np.array(matched_index)
